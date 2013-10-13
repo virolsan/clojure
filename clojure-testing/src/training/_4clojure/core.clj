@@ -102,12 +102,26 @@
   (reduce * (range 1 (inc n))))
 (my_factorial 8) ; 40320
 
+; #83
+(defn my_some_truth [& params] (=  2 (count (distinct params))))
+(my_some_truth true true)
+(my_some_truth true false)
+; using not=
+(not= true true false true)
+
 
 
 ; KESKENERÄISET
 
 
+
+
 ; KOKEILUJA
+
+(some false? '(true true))
+(some false? '(false true))
+(first (filter false? '(true true)))
+(first (filter false? '(false true)))
 
 ; map
 (map println [1 2 3] [4 5 6])
