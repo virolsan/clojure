@@ -81,10 +81,7 @@
 ; using mapcat
 (mapcat #(list % %) [[1 2] [3 4]])
 
-
-
-; KESKENERÄISET
-
+; #28
 (defn my_flatten [s]
   (mapcat #(if (coll? %) 
            (my_flatten %)
@@ -92,10 +89,29 @@
 (my_flatten '((1 2) 3 [4 [5 6]])) ; '(1 2 3 4 5 6)
 (my_flatten [[1 2]]) ; '(1 2 3 4 5 6)
 
+; #39
+(defn my_interleave [s1 s2]
+  (flatten (map (comp concat list) s1 s2)))
+(my_interleave [30 20] [25 15]) ; [30 25 20 15]
+; using mapcat
+(mapcat list [1 2 3] [4 5 6])
+(interleave [30 20] [25 15])
+
+
+
+
+; KESKENERÄISET
+
 ; KOKEILUJA
 
+; map
+(map println [1 2 3] [4 5 6])
+(flatten (map (comp concat list) [1 2 3] [4 5 6]))
+
+
 ; mapcat
-(mapcat #(list % %) [[1 2] [3 4]])
+(mapcat #(list % %) [[1 2] [3 4]]) ;#32
+(mapcat list [1 2 3] [4 5 6]) ;#39
 
 ; iterate
 (#(take (- %2 %) (iterate inc %)) 1 4)
