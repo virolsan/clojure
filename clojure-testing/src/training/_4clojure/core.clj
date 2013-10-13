@@ -97,10 +97,15 @@
 (mapcat list [1 2 3] [4 5 6])
 (interleave [30 20] [25 15])
 
+; #42
+(defn my_factorial [n]
+  (reduce * (range 1 (inc n))))
+(my_factorial 8) ; 40320
 
 
 
 ; KESKENERÄISET
+
 
 ; KOKEILUJA
 
