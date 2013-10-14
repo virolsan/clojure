@@ -103,25 +103,31 @@
 (my_factorial 8) ; 40320
 
 ; #83
-(defn my_some_truth [& params] (=  2 (count (distinct params))))
+(defn my_some_truth [& params] (= 2 (count (distinct params))))
 (my_some_truth true true)
 (my_some_truth true false)
 ; using not=
 (not= true true false true)
+
+; #30
+(defn my_consecutive_distinct [s]
+  (reduce (fn [s v] 
+						(if (not= v (last s))
+						  (conj s v)
+					    s)) [] s))
+(my_consecutive_distinct [1 1 2 3 3 2 2 3]) ; '(1 2 3 2 3)
+; using partition-by
+(map last (partition-by list [1 1 2 3 3 2 2 3]))
 
 
 
 ; KESKENERÄISET
 
 
-
-
 ; KOKEILUJA
 
-(some false? '(true true))
-(some false? '(false true))
-(first (filter false? '(true true)))
-(first (filter false? '(false true)))
+; partition-by
+(partition-by list [1 1 2 3 3 2 2 3])
 
 ; map
 (map println [1 2 3] [4 5 6])
@@ -139,4 +145,4 @@
 (defn my_range_print [begin end]
   (dotimes [n (- end begin)]
     (print (str (+ begin n) " "))))
-(my_range_print -1 6)
+;(my_range_print -1 6)
