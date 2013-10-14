@@ -120,20 +120,37 @@
 (map last (partition-by list [1 1 2 3 3 2 2 3]))
 
 ; #49
-(defn my_split-at [i s]
+(defn my_split_at [i s]
   (#(into[] (concat (list (first (partition i %))) (list (apply concat (rest (partition-all i %)))))) s))
-(my_split-at 3 [1 2 3 4 5 6]) ; [[1 2 3] [4 5 6]]
+(my_split_at 3 [1 2 3 4 5 6]) ; [[1 2 3] [4 5 6]]
 ; using juxt
 ((juxt take drop) 3 [1 2 3 4 5 6])
 (take 3 [1 2 3 4 5 6])
 (drop 3 [1 2 3 4 5 6])
+
+; #33
+(defn my_replicate [s n]
+  (mapcat #((fn f [t v n] 
+              (if (> n 0)
+                (f (conj t %) v (dec n))
+                t)) [] % n) s))
+(my_replicate [1 2 3] 2) ; '(1 1 2 2 3 3)
+; using repeat
+(mapcat #(repeat 2 %) [1 2 3]) ;
 
 
 
 ; KESKENERÄISET
 
 
+
 ; KOKEILUJA
+
+; repeat
+(mapcat #(repeat 2 %) [1 2 3]) ;#33
+
+; juxt
+((juxt take drop) 3 [1 2 3 4 5 6]) ; [[1 2 3] [4 5 6]]
 
 ; partition-by
 (partition-by list [1 1 2 3 3 2 2 3])
