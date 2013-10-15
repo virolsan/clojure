@@ -11,16 +11,19 @@
         rank (concat (range 2 11) [\J \Q \K \A])]
     {:suit suit :rank rank}))
 
-;(defn has-pair [hand]
-;  (into [] (apply (-> hand :rank) hand)))
+(defn get-vals [hand col]
+  (reduce #(conj %1 (get %2 :rank)) [] hand))
+
+(defn has-pair [hand]
+  ((complement distinct?) (get-vals hand :rank)))
+
 
 (make-deck)
 
 (shuffle (make-deck))
 
-;(has-pair (take 5 (make-deck)))
+(has-pair (take 5 (make-deck)))
 
-(take 5 (shuffle (make-deck)))
+; kokeiluja
 
-(apply str (take 5 (make-deck)))
-(fn [hand] (into [] (apply (str (:rank hand)))) (take 5 (make-deck)))
+(reduce #(conj %1 (get %2 :rank)) [] (take 5 (make-deck)))
