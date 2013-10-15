@@ -17,6 +17,8 @@
 (defn has-pair [hand]
   (apply (complement distinct?) (get-vals hand :rank)))
 
+(defn resolve-better-hand [a b]
+  (a))
 
 
 ; testausta
