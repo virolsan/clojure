@@ -123,10 +123,13 @@
 (defn my_split_at [i s]
   (#(into[] (concat (list (first (partition i %))) (list (apply concat (rest (partition-all i %)))))) s))
 (my_split_at 3 [1 2 3 4 5 6]) ; [[1 2 3] [4 5 6]]
+; take'n'drop approach
+(#(into[] (concat (list (take %1 %2)) (list (drop %1 %2)))) 3 [1 2 3 4 5 6])
+; vector approach
+((fn [n s] [(take n s) (drop n s)]) 3 [1 2 3 4 5 6])
 ; using juxt
 ((juxt take drop) 3 [1 2 3 4 5 6])
-(take 3 [1 2 3 4 5 6])
-(drop 3 [1 2 3 4 5 6])
+
 
 ; #33
 (defn my_replicate [s n]
@@ -152,7 +155,7 @@
 ; juxt
 ((juxt take drop) 3 [1 2 3 4 5 6]) ; [[1 2 3] [4 5 6]]
 
-; partition-by
+; partition-by, ...
 (partition-by list [1 1 2 3 3 2 2 3])
 (#(into[] (concat (partition 4 %) (list (apply concat (rest (partition-all 4 %)))))) [1 2 3 4 5 6])
 
@@ -164,7 +167,6 @@
 ; map
 (map println [1 2 3] [4 5 6])
 (flatten (map (comp concat list) [1 2 3] [4 5 6]))
-
 
 ; mapcat
 (mapcat #(list % %) [[1 2] [3 4]]) ;#32
