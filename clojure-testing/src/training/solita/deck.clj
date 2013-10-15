@@ -15,15 +15,26 @@
   (reduce #(conj %1 (get %2 :rank)) [] hand))
 
 (defn has-pair [hand]
-  ((complement distinct?) (get-vals hand :rank)))
+  (apply (complement distinct?) (get-vals hand :rank)))
 
+
+
+; testausta
 
 (make-deck)
 
 (shuffle (make-deck))
 
-(has-pair (take 5 (make-deck)))
+(get-vals (take 5 (make-deck)) :rank)
+(get-vals (take 14 (make-deck)) :rank)
 
-; kokeiluja
+(has-pair (take 5 (make-deck)))
+(has-pair (take 14 (make-deck)))
+
+
+; muita kokeiluja
 
 (reduce #(conj %1 (get %2 :rank)) [] (take 5 (make-deck)))
+
+(distinct? [1 1])
+(apply distinct? [1 1])
