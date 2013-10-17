@@ -152,10 +152,16 @@
   (mapcat #(take (dec n) %) (partition-all n s)))
 (my_drop_nths [1 2 3 4 5 6 7 8] 3) ; [1 2 4 5 7 8]
 
+; #61
+(defn my_zipmap [s1 s2]
+  (apply merge (map hash-map s1 s2)))
+(my_zipmap [:a :b :c] [1 2 3]) ; {:a 1, :b 2, :c 3}
+; using interleave
+(apply hash-map (interleave [:a :b :c] [1 2 3]))
+
 
 
 ; KESKENERÄISET
-
 
 
 ; TIP'N'TRICKS
