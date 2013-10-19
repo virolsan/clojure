@@ -159,12 +159,18 @@
 ; using interleave
 (apply hash-map (interleave [:a :b :c] [1 2 3]))
 
+; #81
+(defn my_intersect [s1 s2]
+  (into #{} (filter (partial contains? s2) s1)))
+(my_intersect #{0 1 2 3} #{2 3 4 5}) ; #{2 3}
+
 
 
 ; KESKENERÄISET
 
 
-; TIP'N'TRICKS
+
+; TIPS'N'TRICKS
 
 ; with sequential operations, last value is returned
 ; do
