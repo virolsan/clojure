@@ -1,4 +1,4 @@
-(ns training._4clojure.core)
+
 
 ; fibonacci rekursiolla
 (defn my_fibonacci [cnt] 
@@ -7,7 +7,6 @@
       (foo (conj s cur) cur (+ pre cur) (inc i) cnt)
       s)) [] 0 1 1 cnt))
 (my_fibonacci 8)  ; '(1 1 2 3 5 8 13 21)
-
 
 ; 4clojure problems
 
@@ -20,13 +19,16 @@
 
 ; #134
 (defn my_value_exists [y x] 
-  (and (contains? x y) (= nil (get x y))))
+  (and (contains? x y) (nil? (get x y))))
 
 ; #156
 (defn my_map_init [defaultvalue keyseq] 
   (into {} (map #(hash-map % defaultvalue) keyseq)))
 (my_map_init 1 [1 2])
 ; (into {} (map vector [1 2] (repeat 1)))
+#(reduce (fn [m v]
+            (assoc m v %1))
+        {} %2)
 
 ; #38
 (defn my_max_value [& x] 
@@ -142,7 +144,20 @@
 
 ; KESKENERÄISET
 
+; #66
+(defn my_greatestcommondivisor [x y]
+  (#(or (= (mod %1 %2) 0) (= (mod %2 %1) 0)) x y))
+(my_greatestcommondivisor 2 4)
 
+(#(first (list %1 %2)) 12 20)
+(#(range 1 (inc (first (list %1 %2)))) 12 20)
+(filter #(even? %) [1 2 3 4 5 6])
+((-> (partial filter #(even? %)) #(apply conj [] (range 1 (inc (first (list %1 %2)))))) 12 20)
+
+((partial filter (fn [a b] (or (= (mod a b) 0) (= (mod b a) 0)))) (fn [x y] (range 1 (inc (first (list x y))))) 12 20)
+
+(defn my_common_divisor? [num div] (= (mod num div) 0))
+(my_common_divisor? 4 2)
 
 ; KOKEILUJA
 
