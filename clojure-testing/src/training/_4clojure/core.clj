@@ -1,4 +1,4 @@
-
+(ns training._4clojure.core)
 
 ; fibonacci rekursiolla
 (defn my_fibonacci [cnt] 
@@ -125,10 +125,13 @@
 (defn my_split_at [i s]
   (#(into[] (concat (list (first (partition i %))) (list (apply concat (rest (partition-all i %)))))) s))
 (my_split_at 3 [1 2 3 4 5 6]) ; [[1 2 3] [4 5 6]]
+; take'n'drop approach
+(#(into[] (concat (list (take %1 %2)) (list (drop %1 %2)))) 3 [1 2 3 4 5 6])
+; vector approach
+((fn [n s] [(take n s) (drop n s)]) 3 [1 2 3 4 5 6])
 ; using juxt
 ((juxt take drop) 3 [1 2 3 4 5 6])
-(take 3 [1 2 3 4 5 6])
-(drop 3 [1 2 3 4 5 6])
+
 
 ; #33
 (defn my_replicate [s n]
@@ -138,7 +141,30 @@
                 t)) [] % n) s))
 (my_replicate [1 2 3] 2) ; '(1 1 2 2 3 3)
 ; using repeat
-(mapcat #(repeat 2 %) [1 2 3]) ;
+(mapcat #(repeat 2 %) [1 2 3])
+
+; #40
+(defn my_interpose [a s] (rest (mapcat #(list a %) s)))
+(my_interpose 0 [1 2 3]) ; [1 0 2 0 3]
+; using interleave
+(#(butlast (interleave %2 (repeat %1))) 0 [1 2 3])
+
+; #41
+(defn my_drop_nths [s n]
+  (mapcat #(take (dec n) %) (partition-all n s)))
+(my_drop_nths [1 2 3 4 5 6 7 8] 3) ; [1 2 4 5 7 8]
+
+; #61
+(defn my_zipmap [s1 s2]
+  (apply merge (map hash-map s1 s2)))
+(my_zipmap [:a :b :c] [1 2 3]) ; {:a 1, :b 2, :c 3}
+; using interleave
+(apply hash-map (interleave [:a :b :c] [1 2 3]))
+
+; #81
+(defn my_intersect [s1 s2]
+  (into #{} (filter (partial contains? s2) s1)))
+(my_intersect #{0 1 2 3} #{2 3 4 5}) ; #{2 3}
 
 
 
@@ -159,15 +185,41 @@
 (defn my_common_divisor? [num div] (= (mod num div) 0))
 (my_common_divisor? 4 2)
 
-; KOKEILUJA
+; TIPS'N'TRICKS
+
+; with sequential operations, last value is returned
+; do
+(do (println "Hello.") (println "Hello again.") (+ 2 2))
+; fn
+((fn [] (println "Here we are") (+ 1 2)))
+; when (note! there's no else)
+(when true (+ 1 1) (- 1 1) (* 1 1))
+; let
+(let [color "Red" phrase (str "Color is: " color)] (str "Silence!") (str "Clojure says: " phrase))
 
 ; repeat
 (mapcat #(repeat 2 %) [1 2 3]) ;#33
 
+; using loops
+; loop/recur
+(loop [i 0]
+  (when (< i 5)
+    (print i)
+    (recur (inc i))))
+; doseq
+(doseq [i (range 0 5)] (print i))
+
+; function may have multiple signatures
+(defn factorial 
+    ([n] (factorial n 1)) 
+    ([n acc] (if (= n 0) 
+               acc 
+               (recur (dec n) (* acc n)))))
+
 ; juxt
 ((juxt take drop) 3 [1 2 3 4 5 6]) ; [[1 2 3] [4 5 6]]
 
-; partition-by
+; partition-by, ...
 (partition-by list [1 1 2 3 3 2 2 3])
 (#(into[] (concat (partition 4 %) (list (apply concat (rest (partition-all 4 %)))))) [1 2 3 4 5 6])
 
@@ -179,7 +231,6 @@
 ; map
 (map println [1 2 3] [4 5 6])
 (flatten (map (comp concat list) [1 2 3] [4 5 6]))
-
 
 ; mapcat
 (mapcat #(list % %) [[1 2] [3 4]]) ;#32
@@ -193,3 +244,24 @@
   (dotimes [n (- end begin)]
     (print (str (+ begin n) " "))))
 ;(my_range_print -1 6)
+
+; SPECIAL STUFF (http://en.wikibooks.org/wiki/Clojure_Programming/By_Example)
+
+; mutating permanent state variables
+(def r (ref 0))
+(dosync (ref-set r 5))
+@r
+
+; asynchronous calls (agents)
+(def a (agent 1))
+(send a inc)
+(await a)
+@a
+
+; using mutable state - local thread-safe variable
+(let [secret (ref "nothing")] 
+  (defn read-secret [] @secret) 
+  (defn write-secret [s] (dosync (ref-set secret s))))
+(read-secret)
+(write-secret "Hi");
+(read-secret)
