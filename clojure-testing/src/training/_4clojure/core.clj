@@ -8,6 +8,11 @@
       s)) [] 0 1 1 cnt))
 (my_fibonacci 8)  ; '(1 1 2 3 5 8 13 21)
 
+(defn my_fibo_n [c]
+  (apply + (take 2 (reverse c))))
+(my_fibo_n [1])
+
+
 ; 4clojure problems
 
 ; #16
@@ -178,9 +183,9 @@
 (#(first (list %1 %2)) 12 20)
 (#(range 1 (inc (first (list %1 %2)))) 12 20)
 (filter #(even? %) [1 2 3 4 5 6])
-((-> (partial filter #(even? %)) #(apply conj [] (range 1 (inc (first (list %1 %2)))))) 12 20)
+;((-> (partial filter #(even? %)) #(apply conj [] (range 1 (inc (first (list %1 %2)))))) 12 20)
 
-((partial filter (fn [a b] (or (= (mod a b) 0) (= (mod b a) 0)))) (fn [x y] (range 1 (inc (first (list x y))))) 12 20)
+;((partial filter (fn [a b] (or (= (mod a b) 0) (= (mod b a) 0)))) (fn [x y] (range 1 (inc (first (list x y))))) 12 20)
 
 (defn my_common_divisor? [num div] (= (mod num div) 0))
 (my_common_divisor? 4 2)
