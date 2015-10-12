@@ -91,29 +91,7 @@
       :else nil)))
 
 
+; testing
+
 (let [hands (deal-cards 5 3)]
   (reduce resolve-better-hand hands))
-
-
-
-; testausta
-
-(make-deck)
-(deal-cards 5 1)
-
-(keys (group-hand-by-count (nth (deal-cards 5 1) 0) :rank))
-(count (group-hand-by-count (nth (deal-cards 5 1) 0) :rank))
-
-(resolve-points (nth (deal-cards 5 1) 0))
-(reduce resolve-better-hand (deal-cards 5 2))
-
-
-; muita kokeiluja
-
-(reduce #(conj %1 (get %2 :rank)) [] (take 5 (make-deck)))
-
-(distinct? [1 2 1])
-(apply distinct? [1 2 1])
-(apply (complement distinct?) [1 2 1])
-
-(take 13 (iterate inc 2))
