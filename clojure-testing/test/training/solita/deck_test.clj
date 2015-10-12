@@ -2,11 +2,11 @@
   (:use [training.solita.deck]
         [midje.sweet]))
 
-(let [low-card '( {:suit \D, :value 4, :rank 4}
+(let [worst-hand '( {:suit \D, :value 4, :rank 4}
                   {:suit \C, :value 2, :rank 2}
                   {:suit \C, :value 6, :rank 6}
                   {:suit \C, :value 5, :rank 5}
-                  {:suit \S, :value 8, :rank 8})
+                  {:suit \S, :value 7, :rank 7})
       high-card '( {:suit \D, :value 4, :rank 4}
                    {:suit \C, :value \A, :rank 14}
                    {:suit \C, :value 6, :rank 6}
@@ -17,6 +17,11 @@
                   {:suit \C, :value 6, :rank 6}
                   {:suit \C, :value 5, :rank 5}
                   {:suit \S, :value 8, :rank 8})
+      high-pair '( {:suit \D, :value 4, :rank 4}
+                   {:suit \C, :value 6, :rank 6}
+                   {:suit \C, :value 6, :rank 6}
+                   {:suit \C, :value 5, :rank 5}
+                   {:suit \S, :value 2, :rank 2})
       one-pair-high-card '( {:suit \D, :value 4, :rank 4}
                             {:suit \C, :value 4, :rank 4}
                             {:suit \C, :value \A, :rank 14}
@@ -62,7 +67,7 @@
                      {:suit \C, :value \Q, :rank 12}
                      {:suit \C, :value \K, :rank 13}
                      {:suit \C, :value \A, :rank 14})]
-
+  
   (facts "General"
          (fact "Size of deck" 
                (count (make-deck)) => 52))
@@ -119,18 +124,22 @@
          (fact "Royal flush"
                (resolve-points royal-flush) => 10))
 
-  (facts "Resolve better hand"
+  (facts "Higher category wins"
          (fact "High card vs. One pair"
                (resolve-better-hand high-card one-pair) => one-pair)
-         (fact "Low card vs. High card"
-               (resolve-better-hand low-card high-card) => high-card)
-         (fact "High card vs. Low card"
-               (resolve-better-hand high-card low-card) => high-card)
+         (fact "Worst hand vs. High card"
+               (resolve-better-hand worst-hand high-card) => high-card)
+         (fact "High card vs. Worst hand"
+               (resolve-better-hand high-card worst-hand) => high-card))
+  
+  (facts "Higher cards in same category wins"
          (fact "One pair with High card vs. One pair"
                (resolve-better-hand one-pair-high-card one-pair) => one-pair-high-card)
          (fact "One pair vs. One pair with High card"
-               (resolve-better-hand one-pair one-pair-high-card) => one-pair-high-card))
+               (resolve-better-hand one-pair one-pair-high-card) => one-pair-high-card)
+         (fact "High pair vs. One pair"
+               (resolve-better-hand high-pair one-pair) => high-pair)
          (fact "Draw"
-               (resolve-better-hand one-pair one-pair) => nil)
+               (resolve-better-hand one-pair one-pair) => nil))
 )
 
