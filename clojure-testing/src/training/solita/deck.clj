@@ -29,6 +29,8 @@
 (defn max-kind [hand]
   (apply max (keys (group-hand-by-count hand :rank))))
 
+(defn high-card [hand]
+  (first (reverse (sort (get-vals hand :rank)))))
 
 (defn has-pair? [hand]
   (= 2 (max-kind hand)))
@@ -44,7 +46,8 @@
 
 (defn has-straight? [hand]
   (let [ranks (sort (get-vals hand :rank))]
-    (= 4 (- (nth ranks 4) (nth ranks 0)))))
+    (and (apply distinct? ranks)
+         (= 4 (- (nth ranks 4) (nth ranks 0))))))
 
 (defn has-flush? [hand]
   (not (empty? ((group-hand-by-count hand :suit) 5))))
@@ -61,23 +64,31 @@
 ;  9 = one pair         2 pts
 ; 10 = high card
 (defn resolve-points [hand]
-  (max
-    (if (has-pair? hand)            2 0)
-    (if (has-two-pairs? hand)       3 0)
-    (if (has-three-of-a-kind? hand) 4 0)
-    (if (has-straight? hand)        5 0)
-    (if (has-flush? hand)           6 0)
-    (if (and (has-three-of-a-kind? hand) 
-             (has-two-pairs? hand ))  7 0)
-    (if (has-four-of-a-kind? hand)  8 0) 
-    (if (and (has-flush? hand) 
-             (has-straight? hand))  9 0)
-  ))
+  (cond
+    (and (has-flush? hand) 
+         (has-straight? hand)
+         (= 14 (high-card hand))) 10
+    (and (has-flush? hand) 
+         (has-straight? hand))    9
+    (has-four-of-a-kind? hand)    8
+    (and (has-three-of-a-kind? hand) 
+         (has-two-pairs? hand ))  7
+    (has-flush? hand)             6
+    (has-straight? hand)          5
+    (has-three-of-a-kind? hand)   4
+    (has-two-pairs? hand)         3
+    (has-pair? hand)              2
+    :else                         0))
 
 (defn resolve-better-hand [a b]
   (let [a-points (resolve-points a)
         b-points (resolve-points b)]
-  (if (> a-points b-points) a b)))
+    (cond 
+      (> a-points b-points) a
+      (> b-points a-points) b
+      (> (high-card a) (high-card b)) a
+      (> (high-card b) (high-card a)) b
+      :else nil)))
 
 
 (let [hands (deal-cards 5 3)]
