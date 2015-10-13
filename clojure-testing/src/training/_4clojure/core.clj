@@ -175,6 +175,18 @@
 
 ; KESKENERÄISET
 
+; #107
+(defn my_exp_hof [] 
+  ())
+(map (my_exp_hof 3) [1 2 3 4]) ; [1 8 27 64]
+
+; #99
+(defn my_multiply [x y]
+  (mapcat num (seq (str (* x y)))))
+(my_multiply 99 9) ; [8 9 1]
+
+;(map  (map str (str (* 99 9))))
+
 ; #66
 (defn my_greatestcommondivisor [x y]
   (#(or (= (mod %1 %2) 0) (= (mod %2 %1) 0)) x y))
