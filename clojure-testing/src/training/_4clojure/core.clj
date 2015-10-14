@@ -171,23 +171,33 @@
   (into #{} (filter (partial contains? s2) s1)))
 (my_intersect #{0 1 2 3} #{2 3 4 5}) ; #{2 3}
 
+; #63
+(defn my_group_by [f items]
+ (reduce 
+   (fn [result item] 
+     (let [key (f item)]
+       (assoc result 
+              key 
+              (conj (get result key [])
+                    item))))
+   {} 
+   items))
+(my_group_by count [[1] [1 2] [3] [1 2 3] [2 3]])
+
 
 
 ; KESKENERÄISET
 
-; #63
-(defn my_group_by [f items]
- (reduce 
-   (fn [result item] (assoc result (f item) (conj item))) ; TODO use conj tms -> map {key collection}
-   {} 
-   items))
+; #90
 
-(my_group_by count [[1] [1 2] [3] [1 2 3] [2 3]])
-
-(assoc {} (#(+ 1 %) 10) 10)
-
-;(= (my_group_by count [[1] [1 2] [3] [1 2 3] [2 3]])
-;   {1 [[1] [3]], 2 [[1 2] [2 3]], 3 [[1 2 3]]})
+(defn my_cartesian_prod [set1 set2]
+  (let [result #{}]
+    (for [s1 set1
+          s2 set2]
+      (conj result [s1 s2]))))
+(my_cartesian_prod #{1 2 3} #{4 5})
+(= (my_cartesian_prod #{1 2 3} #{4 5})
+   #{[1 4] [2 4] [3 4] [1 5] [2 5] [3 5]})
 
 ; #107
 (defn my_exp_hof [] 
