@@ -175,6 +175,20 @@
 
 ; KESKENERÄISET
 
+; #63
+(defn my_group_by [f items]
+ (reduce 
+   (fn [result item] (assoc result (f item) (conj item))) ; TODO use conj tms -> map {key collection}
+   {} 
+   items))
+
+(my_group_by count [[1] [1 2] [3] [1 2 3] [2 3]])
+
+(assoc {} (#(+ 1 %) 10) 10)
+
+;(= (my_group_by count [[1] [1 2] [3] [1 2 3] [2 3]])
+;   {1 [[1] [3]], 2 [[1 2] [2 3]], 3 [[1 2 3]]})
+
 ; #107
 (defn my_exp_hof [] 
   ())
